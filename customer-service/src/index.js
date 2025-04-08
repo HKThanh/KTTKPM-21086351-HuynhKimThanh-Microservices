@@ -1,10 +1,10 @@
 const express = require('express');
-const orderRoutes = require('./routes/orderRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 const connectDB = require('./config/mongodb');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 4002;
+const PORT = process.env.PORT || 4003;
 
 app.use(express.json());
 
@@ -13,10 +13,10 @@ const startServer = async () => {
     try {
         await connectDB();
         
-        app.use('/api/orders', orderRoutes);
+        app.use('/api/customers', customerRoutes);
         
         app.listen(PORT, () => {
-            console.log(`Order Service running on port ${PORT}`);
+            console.log(`Customer Service running on port ${PORT}`);
         });
     } catch (error) {
         console.error('Failed to start server:', error);

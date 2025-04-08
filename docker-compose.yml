@@ -23,6 +23,18 @@ services:
     networks:
       - mongo-network
 
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "4003:4003"
+    environment:
+      - MONGO_URI=mongodb://root:example@mongo:27017/customer_db?authSource=admin
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - mongo-network
+
   mongo:
     image: mongo:latest
     ports:
