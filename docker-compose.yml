@@ -1,0 +1,39 @@
+services:
+  product-service:
+    build: ./product-service
+    ports:
+      - "4001:4001"
+    environment:
+      - MONGO_URI=mongodb://root:example@mongo:27017/product_db?authSource=admin
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - mongo-network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=product_db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    volumes:
+      - mongo-data:/data/db
+      - ./product-service/src/data-mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - mongo-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+networks:
+  mongo-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
