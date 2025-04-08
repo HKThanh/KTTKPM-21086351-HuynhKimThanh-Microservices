@@ -12,7 +12,7 @@ db.createUser({
         db: 'product_db'
       }
     ]
-  })
+})
 
 db.products.insertMany([
     {
